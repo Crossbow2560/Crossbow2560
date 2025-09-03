@@ -1,4 +1,7 @@
-## Hi there 👋
+nishit.db
+-
+## <p align="center">👋 Hello There! I'm Nishit DB </p>
+### About Me:
 
 <!--
 **Crossbow2560/Crossbow2560** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
