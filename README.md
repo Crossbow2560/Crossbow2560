@@ -2,7 +2,7 @@ nishit.db
 -
 ## <p align="center">👋 Hello There! I'm Nishit DB </p>
 ### About Me:
-I am a sophomore at PES University pursuing a B.Tech in Computer Science and Engineering. A passionate tech enthusiast, I have a keen interest in both hardware and software.
+I’m a sophomore at PES University, pursuing B.Tech in Computer Science and Engineering. I love exploring both hardware and software, and enjoy building projects that bring the two together.
 
 <!--
 **Crossbow2560/Crossbow2560** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
