@@ -14,35 +14,41 @@ from pathlib import Path
 import ascii_portrait
 
 # ---- Profile data (edit these) ---------------------------------------------
-NAME = "Nishit DB"
+NAME = "NISHIT DB"
 GITHUB_USER = "Crossbow2560"
 DOB = date(2006, 7, 8)
 OUTPUT_PATH = "assets/profile.svg"
 
-# (key, value) rows shown under the name. Age and GitHub rows are added
-# automatically after these.
-INFO = [
-    ("OS", "Omarchy, Android, Windows"),
-    ("University", "PES University, B.Tech CSE"),
-    ("Interests", "Hardware and software"),
-    ("Languages", "Python, Javascript, C"),
-    ("Frameworks", "React, Next.js, Fastify, Express, Socket.IO"),
-    ("Tools", "Docker, Prisma, Vite, Tailwind CSS"),
+# Sections of (label, value) rows. Age and the GitHub section are added
+# automatically.
+SYSTEM = [
+    ("OS", "Omarchy (Arch Linux), Hyprland"),
+    ("UNIVERSITY", "PES University, B.Tech CSE (sophomore)"),
+    ("INTERESTS", "Hardware and software"),
 ]
-
+STACK = [
+    ("LANGUAGES", "TypeScript, Rust, Python"),
+    ("FRAMEWORKS", "React, Next.js, Fastify, Express, Socket.IO"),
+    ("TOOLS", "Docker, Prisma, Vite, Tailwind CSS"),
+]
 # (name, detail). Add or replace entries as projects are ready.
 PROJECTS = [
-    ("DBase", "dbase.nishit-db.com"),
-    ("Cabo", "cabo.nishit-db.com"),
-    ("More", "coming soon"),
+    ("DBASE", "dbase.nishit-db.com"),
+    ("CABO", "cabo.nishit-db.com"),
+    ("NEXT", "coming soon"),
 ]
 
+# Palette: near-black with one accent.
+BG, ACCENT = "#0a0d14", "#5b9dff"
+TEXT, DIM, LINE = "#d3dbe8", "#5d6b82", "#1c2433"
+
 # Layout, in SVG units
-GAP = 36  # space between portrait and info
-INFO_WIDTH = 520
-LINE_H = 22
-FONT_SIZE = 14
-PAD = 12
+PAD = 28
+GAP = 24
+INFO_WIDTH = 500
+VALUE_X = 112  # x of the value column
+LINE_H = 21
+FONT_SIZE = 13
 # ----------------------------------------------------------------------------
 
 
@@ -79,24 +85,28 @@ def github_stats(user: str) -> dict[str, str]:
         repos = get(f"https://api.github.com/users/{user}/repos?per_page=100&type=owner")
         stars = sum(r["stargazers_count"] for r in repos if not r["fork"])
         return {
-            "Repos": str(profile["public_repos"]),
-            "Followers": str(profile["followers"]),
-            "Stars": str(stars),
+            "REPOS": str(profile["public_repos"]),
+            "FOLLOWERS": str(profile["followers"]),
+            "STARS": str(stars),
         }
     except Exception as exc:  # the card should still build if the API is down
         print(f"GitHub stats unavailable: {exc}")
-        return {"Repos": "n/a", "Followers": "n/a", "Stars": "n/a"}
+        return {"REPOS": "n/a", "FOLLOWERS": "n/a", "STARS": "n/a"}
 
 
-def row(y: float, key: str, value: str) -> str:
+def row(y: float, key: str, value: str, value_fill: str = TEXT) -> str:
     return (
-        f'<text x="0" y="{y:g}"><tspan class="k">{escape(key)}</tspan>'
-        f'<tspan class="d">: </tspan><tspan class="v">{escape(value)}</tspan></text>'
+        f'<text x="0" y="{y:g}" fill="{ACCENT}" font-weight="700">{escape(key)}</text>'
+        f'<text x="{VALUE_X}" y="{y:g}" fill="{value_fill}">{escape(value)}</text>'
     )
 
 
 def heading(y: float, title: str) -> str:
-    return f'<text x="0" y="{y:g}" class="h">{escape(title)}</text>'
+    return (
+        f'<text x="0" y="{y:g}" fill="{DIM}" letter-spacing="1.5">[ {escape(title)} ]</text>'
+        f'<rect x="0" y="{y + 8:g}" width="{INFO_WIDTH}" height="1" fill="{LINE}"/>'
+        f'<rect x="0" y="{y + 8:g}" width="28" height="1" fill="{ACCENT}"/>'
+    )
 
 
 def build() -> str:
@@ -108,51 +118,79 @@ def build() -> str:
     art, art_w, art_h = ascii_portrait.portrait_fragment()
 
     lines: list[str] = []
-    y = FONT_SIZE
-    lines.append(f'<text x="0" y="{y}" class="name">{escape(NAME)}</text>')
-    y += LINE_H * 0.6
-    lines.append(f'<text x="0" y="{y:g}" class="d">{"-" * 34}</text>')
-    y += LINE_H
-    lines.append(row(y, "Age", age))
-    for key, value in INFO:
+    y = 24
+    lines.append(f'<text x="0" y="{y}" fill="#e8f1ef" font-size="24" font-weight="800" '
+                 f'letter-spacing="2">{escape(NAME)}<tspan fill="{ACCENT}" class="cursor">_</tspan></text>')
+    y += LINE_H * 1.4
+
+    lines.append(heading(y, "SYSTEM"))
+    y += LINE_H * 1.2
+    lines.append(row(y, "AGE", age, ACCENT))
+    for key, value in SYSTEM:
         y += LINE_H
         lines.append(row(y, key, value))
 
     y += LINE_H * 1.6
-    lines.append(heading(y, "Projects"))
-    for name, detail in PROJECTS:
-        y += LINE_H
-        lines.append(row(y, name, detail))
+    lines.append(heading(y, "STACK"))
+    y += LINE_H * 1.2
+    for i, (key, value) in enumerate(STACK):
+        if i:
+            y += LINE_H
+        lines.append(row(y, key, value))
 
     y += LINE_H * 1.6
-    lines.append(heading(y, "GitHub"))
-    gh = "  ".join(f"{k} {v}" for k, v in stats.items())
-    y += LINE_H
-    lines.append(row(y, "Stats", gh))
-    y += LINE_H
-    lines.append(row(y, "Updated", today.isoformat() + " (UTC)"))
+    lines.append(heading(y, "PROJECTS"))
+    y += LINE_H * 1.2
+    for i, (key, value) in enumerate(PROJECTS):
+        if i:
+            y += LINE_H
+        lines.append(row(y, key, value, DIM if key == "NEXT" else TEXT))
 
-    info_h = y + PAD
-    height = max(art_h, round(info_h)) + 2 * PAD
-    width = PAD + art_w + GAP + INFO_WIDTH + PAD
-    info_y = PAD + max(0, (height - 2 * PAD - info_h) / 2)
+    y += LINE_H * 1.6
+    lines.append(heading(y, "GITHUB"))
+    y += LINE_H * 1.2
+    lines.append(row(y, "STATS", "  |  ".join(f"{k} {v}" for k, v in stats.items())))
+    y += LINE_H
+    lines.append(row(y, "SYNC", f"{today.isoformat()} UTC", DIM))
 
+    info_h = y + 10
+    body_h = max(art_h, round(info_h)) + 24
+    width = PAD + art_w + 24 + GAP + INFO_WIDTH + PAD
+    height = body_h + 2 * PAD
+
+    top = PAD
+    art_panel_w = art_w + 24
+    info_x = PAD + art_panel_w + GAP
+    art_y = top + (body_h - art_h) / 2
+    info_y = top + (body_h - info_h) / 2 + 6
+
+    mono = 'font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"'
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 {width} {height}" '
-        f'width="{width}" height="{height}" role="img" '
+        f'<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" '
+        f'viewBox="0 0 {width} {height}" width="{width}" height="{height}" role="img" '
         f'aria-label="{escape(NAME)} profile card">\n'
-        "<style>\n"
-        "  .k{fill:#0969da;font-weight:600} .v{fill:#1f2328} .d{fill:#6e7781}\n"
-        "  .h{fill:#0969da;font-weight:700;text-decoration:underline}\n"
-        "  .name{fill:#1f2328;font-weight:700;font-size:20px}\n"
-        "  @media (prefers-color-scheme: dark){\n"
-        "    .k,.h{fill:#58a6ff} .v,.name{fill:#e6edf3} .d{fill:#8b949e}\n"
-        "  }\n"
-        "</style>\n"
-        f'<g transform="translate({PAD} {PAD})" font-family="ui-monospace, SFMono-Regular, '
-        f'Menlo, Consolas, monospace" font-size="{ascii_portrait.FONT_SIZE}">\n{art}\n</g>\n'
-        f'<g transform="translate({PAD + art_w + GAP} {info_y:g})" font-family="ui-monospace, '
-        f'SFMono-Regular, Menlo, Consolas, monospace" font-size="{FONT_SIZE}">\n'
+        "<defs>\n"
+        '  <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">'
+        f'<path d="M24 0H0V24" fill="none" stroke="{LINE}" stroke-width="0.6"/></pattern>\n'
+        '  <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">'
+        '<rect width="4" height="1" fill="#fff" opacity="0.025"/></pattern>\n'
+        "</defs>\n"
+        "<style>.cursor{animation:blink 1.2s steps(1) infinite}"
+        "@keyframes blink{50%{opacity:0}}</style>\n"
+        f'<rect width="{width}" height="{height}" fill="{BG}"/>\n'
+        f'<rect width="{width}" height="{height}" fill="url(#grid)" opacity="0.5"/>\n'
+        f'<rect width="{width}" height="{height}" fill="url(#scan)"/>\n'
+        f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" fill="none" '
+        f'stroke="{LINE}"/>\n'
+        # portrait panel
+        f'<rect x="{PAD}" y="{top}" width="{art_panel_w}" height="{body_h}" fill="#000" '
+        f'fill-opacity="0.35" stroke="{LINE}"/>\n'
+        f'<g transform="translate({PAD + 12} {art_y:g})" {mono} '
+        f'font-size="{ascii_portrait.FONT_SIZE}">\n{art}\n</g>\n'
+        # info panel
+        f'<rect x="{info_x - 14}" y="{top}" width="{INFO_WIDTH + 28}" height="{body_h}" '
+        f'fill="#000" fill-opacity="0.35" stroke="{LINE}"/>\n'
+        f'<g transform="translate({info_x} {info_y:g})" {mono} font-size="{FONT_SIZE}">\n'
         + "\n".join(lines)
         + "\n</g>\n</svg>\n"
     )

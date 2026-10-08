@@ -23,12 +23,15 @@ FONT_SIZE = 8.5
 # Crop box as fractions of the image: (left, top, right, bottom).
 CROP = (0.30, 0.07, 0.74, 0.56)
 BLUR = 1.2  # smooths texture before downscaling, 0 to disable
-GAMMA = 1.0  # < 1 brightens midtones, > 1 darkens them
+GAMMA = 0.9  # < 1 brightens midtones, > 1 darkens them
 CONTRAST = 1.4
 AUTOCONTRAST_CUTOFF = 1  # percent of extreme pixels ignored
 # Colour is lifted toward mid gray so dark pixels stay visible on dark themes
 # and bright ones on light themes. 0 keeps the original colour.
-COLOR_LIFT = 0.25
+COLOR_LIFT = 0.15
+# Monochrome tint: (dark, bright) hex colours blended by brightness. Set to
+# None to keep the photo's original colours instead.
+TINT = None
 ALPHA_CUTOFF = 40  # pixels with alpha below this are left blank
 # ----------------------------------------------------------------------------
 
@@ -68,7 +71,12 @@ def portrait_fragment(path: str = IMAGE_PATH) -> tuple[str, int, int]:
             ch = ramp[round(gray.getpixel((x, y)) / 255 * last)]
             if ch == " ":
                 continue
-            r, g, b = (round(c + (128 - c) * COLOR_LIFT) for c in color.getpixel((x, y)))
+            if TINT:
+                t = gray.getpixel((x, y)) / 255
+                lo, hi = (tuple(int(c[i:i + 2], 16) for i in (1, 3, 5)) for c in TINT)
+                r, g, b = (round(a + (b_ - a) * t) for a, b_ in zip(lo, hi))
+            else:
+                r, g, b = (round(c + (128 - c) * COLOR_LIFT) for c in color.getpixel((x, y)))
             xs.append(f"{x * CHAR_W:g}")
             spans.append(f'<tspan fill="#{r:02x}{g:02x}{b:02x}">{escape(ch)}</tspan>')
         if spans:
