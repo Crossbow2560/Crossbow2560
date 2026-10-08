@@ -7,7 +7,7 @@ import html
 import re
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 # ---- Settings (edit these) -------------------------------------------------
 IMAGE_PATH = "assets/portrait.jpg"
@@ -19,35 +19,19 @@ RAMP = " .:-=+*#%@"
 # Terminal characters are about twice as tall as wide.
 CHAR_ASPECT = 0.5
 # Crop box as fractions of the image: (left, top, right, bottom).
-CROP = (0.22, 0.07, 0.84, 0.70)
+CROP = (0.30, 0.07, 0.74, 0.56)
 # Blur radius in source pixels. Smooths stone and fabric texture so the face
 # shapes survive the downscale. Set to 0 to disable.
-BLUR = 3
-# Tone tuning. GAMMA < 1 brightens midtones (useful for a dark subject on a
-# light-on-dark ramp), > 1 darkens them. CONTRAST > 1 stretches around mid gray.
-GAMMA = 0.7
-CONTRAST = 1.3
-AUTOCONTRAST_CUTOFF = 2  # percent of extreme pixels ignored
-# Soft elliptical focus: pixels outside fade to the blank end of the ramp,
-# which hides the background. Fractions of the cropped area:
-# (left, top, right, bottom) of the ellipse. Set to None to disable.
-FOCUS = (0.12, 0.0, 0.88, 0.80)
-FOCUS_FEATHER = 0.05  # blur radius as a fraction of the crop width
+BLUR = 1.2
+# Tone tuning. GAMMA < 1 brightens midtones, > 1 darkens them.
+# CONTRAST > 1 stretches values around mid gray.
+GAMMA = 1.0
+CONTRAST = 1.4
+AUTOCONTRAST_CUTOFF = 1  # percent of extreme pixels ignored
 # ----------------------------------------------------------------------------
 
 START = "<!-- ASCII-START -->"
 END = "<!-- ASCII-END -->"
-
-
-def apply_focus(img: Image.Image) -> Image.Image:
-    cw, ch = img.size
-    left, top, right, bottom = FOCUS
-    mask = Image.new("L", img.size, 0)
-    ImageDraw.Draw(mask).ellipse((cw * left, ch * top, cw * right, ch * bottom), fill=255)
-    # Keep the shoulders: everything below the ellipse's widest point stays visible.
-    ImageDraw.Draw(mask).rectangle((cw * 0.02, ch * 0.72, cw * 0.98, ch), fill=255)
-    mask = mask.filter(ImageFilter.GaussianBlur(cw * FOCUS_FEATHER))
-    return Image.composite(img, Image.new("L", img.size, 0), mask)
 
 
 def image_to_ascii(path: str, width: int, ramp: str) -> str:
@@ -60,8 +44,6 @@ def image_to_ascii(path: str, width: int, ramp: str) -> str:
         img = img.filter(ImageFilter.GaussianBlur(BLUR))
     img = ImageOps.autocontrast(img, cutoff=AUTOCONTRAST_CUTOFF)
     img = img.point(lambda v: round(255 * (v / 255) ** GAMMA))
-    if FOCUS:
-        img = apply_focus(img)
     img = ImageEnhance.Contrast(img).enhance(CONTRAST)
     height = max(1, round(img.height / img.width * width * CHAR_ASPECT))
     img = img.resize((width, height), Image.LANCZOS)
