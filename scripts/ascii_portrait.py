@@ -1,74 +1,90 @@
-"""Convert the portrait image to ASCII and embed it in README.md.
+"""Convert the portrait image to a coloured ASCII-art SVG.
 
-The art is written between the ASCII-START and ASCII-END markers.
+If the image has transparency (a background-removed PNG), transparent pixels
+are left blank so only the subject is drawn.
 """
 
-import html
-import re
+from html import escape
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 # ---- Settings (edit these) -------------------------------------------------
-IMAGE_PATH = "assets/portrait.jpg"
-README_PATH = "README.md"
-WIDTH = 90  # output columns, roughly 80 to 100 works well
-# Ordered from darkest to brightest pixel. Light-on-dark: dense characters
-# mark bright areas. Reverse the string for dark-on-light themes.
-RAMP = " .:-=+*#%@"
-# Terminal characters are about twice as tall as wide.
-CHAR_ASPECT = 0.5
+IMAGE_PATH = "assets/portrait.jpg"  # use a transparent PNG for a clean cutout
+OUTPUT_PATH = "assets/ascii-portrait.svg"
+WIDTH = 100  # output columns
+# Ordered from lightest to densest. Density follows brightness, so bright
+# areas get dense characters (suits dark GitHub themes).
+RAMP = " .'`^\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+INVERT = False  # True: dense characters for dark areas instead
+CHAR_W = 6  # SVG units per column
+CHAR_H = 10  # SVG units per row, about 1.7x the width for monospace text
+FONT_SIZE = 10
 # Crop box as fractions of the image: (left, top, right, bottom).
 CROP = (0.30, 0.07, 0.74, 0.56)
-# Blur radius in source pixels. Smooths stone and fabric texture so the face
-# shapes survive the downscale. Set to 0 to disable.
-BLUR = 1.2
-# Tone tuning. GAMMA < 1 brightens midtones, > 1 darkens them.
-# CONTRAST > 1 stretches values around mid gray.
-GAMMA = 1.0
+BLUR = 1.2  # smooths texture before downscaling, 0 to disable
+GAMMA = 1.0  # < 1 brightens midtones, > 1 darkens them
 CONTRAST = 1.4
 AUTOCONTRAST_CUTOFF = 1  # percent of extreme pixels ignored
+# Colour is lifted toward mid gray so dark pixels stay visible on dark themes
+# and bright ones on light themes. 0 keeps the original colour.
+COLOR_LIFT = 0.25
+ALPHA_CUTOFF = 40  # pixels with alpha below this are left blank
 # ----------------------------------------------------------------------------
 
-START = "<!-- ASCII-START -->"
-END = "<!-- ASCII-END -->"
 
-
-def image_to_ascii(path: str, width: int, ramp: str) -> str:
-    img = Image.open(path)
-    img = ImageOps.exif_transpose(img).convert("L")
-    w, h = img.size
-    left, top, right, bottom = CROP
-    img = img.crop((round(left * w), round(top * h), round(right * w), round(bottom * h)))
+def tone(rgba: Image.Image) -> Image.Image:
+    gray = rgba.convert("RGB").convert("L")
     if BLUR:
-        img = img.filter(ImageFilter.GaussianBlur(BLUR))
-    img = ImageOps.autocontrast(img, cutoff=AUTOCONTRAST_CUTOFF)
-    img = img.point(lambda v: round(255 * (v / 255) ** GAMMA))
-    img = ImageEnhance.Contrast(img).enhance(CONTRAST)
-    height = max(1, round(img.height / img.width * width * CHAR_ASPECT))
-    img = img.resize((width, height), Image.LANCZOS)
+        gray = gray.filter(ImageFilter.GaussianBlur(BLUR))
+    gray = ImageOps.autocontrast(gray, cutoff=AUTOCONTRAST_CUTOFF)
+    gray = gray.point(lambda v: round(255 * (v / 255) ** GAMMA))
+    return ImageEnhance.Contrast(gray).enhance(CONTRAST)
 
+
+def build_svg(path: str) -> str:
+    # Blur and tone on the full-size crop, then sample per cell, so detail is
+    # not lost to resizing first.
+    full = ImageOps.exif_transpose(Image.open(path)).convert("RGBA")
+    w, h = full.size
+    left, top, right, bottom = CROP
+    full = full.crop((round(left * w), round(top * h), round(right * w), round(bottom * h)))
+    rows = max(1, round(full.height / full.width * WIDTH * CHAR_W / CHAR_H))
+    size = (WIDTH, rows)
+
+    gray = tone(full).resize(size, Image.LANCZOS)
+    color = full.convert("RGB").resize(size, Image.LANCZOS)
+    alpha = full.getchannel("A").resize(size, Image.LANCZOS)
+
+    ramp = RAMP[::-1] if INVERT else RAMP
     last = len(ramp) - 1
-    pixels = img.tobytes()
-    rows = []
-    for y in range(height):
-        row = pixels[y * width:(y + 1) * width]
-        rows.append("".join(ramp[round(p / 255 * last)] for p in row).rstrip())
-    return "\n".join(rows)
+    lines = []
+    for y in range(rows):
+        xs, spans = [], []
+        for x in range(WIDTH):
+            if alpha.getpixel((x, y)) < ALPHA_CUTOFF:
+                continue
+            ch = ramp[round(gray.getpixel((x, y)) / 255 * last)]
+            if ch == " ":
+                continue
+            r, g, b = (round(c + (128 - c) * COLOR_LIFT) for c in color.getpixel((x, y)))
+            xs.append(str(x * CHAR_W))
+            spans.append(f'<tspan fill="#{r:02x}{g:02x}{b:02x}">{escape(ch)}</tspan>')
+        if spans:
+            baseline = (y + 1) * CHAR_H
+            lines.append(f'<text x="{" ".join(xs)}" y="{baseline}">{"".join(spans)}</text>')
 
-
-def update_readme(readme: str, art: str) -> str:
-    pattern = re.compile(re.escape(START) + r".*?" + re.escape(END), re.DOTALL)
-    if not pattern.search(readme):
-        raise SystemExit(f"Markers {START} and {END} not found in README")
-    block = f"{START}\n{html.escape(art)}\n{END}"
-    return pattern.sub(lambda _: block, readme, count=1)
+    width, height = WIDTH * CHAR_W, rows * CHAR_H + 2
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" '
+        f'width="{width}" height="{height}" role="img" aria-label="ASCII portrait of Nishit DB">\n'
+        f'<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" '
+        f'font-size="{FONT_SIZE}">\n' + "\n".join(lines) + "\n</g>\n</svg>\n"
+    )
 
 
 def main() -> None:
-    art = image_to_ascii(IMAGE_PATH, WIDTH, RAMP)
-    readme = Path(README_PATH)
-    readme.write_text(update_readme(readme.read_text(encoding="utf-8"), art), encoding="utf-8")
+    Path(OUTPUT_PATH).write_text(build_svg(IMAGE_PATH), encoding="utf-8")
 
 
 if __name__ == "__main__":
