@@ -1,17 +1,19 @@
-name: ASCII Portrait
+name: Profile Card
 
 on:
   push:
     paths:
       - assets/portrait.*
-      - scripts/ascii_portrait.py
+      - scripts/**
+  schedule:
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  ascii:
+  card:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,17 +27,19 @@ jobs:
       - name: Install Pillow
         run: pip install pillow
 
-      - name: Generate ASCII portrait
-        run: python scripts/ascii_portrait.py
+      - name: Build profile card
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/build_card.py
 
-      - name: Commit and push if the portrait changed
+      - name: Commit and push if the card changed
         run: |
-          git add assets/ascii-portrait.svg
+          git add assets/profile.svg
           if git diff --cached --quiet; then
-            echo "ascii-portrait.svg unchanged, nothing to commit."
+            echo "profile.svg unchanged, nothing to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Update ASCII portrait"
+          git commit -m "Update profile card"
           git push
