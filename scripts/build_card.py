@@ -180,8 +180,6 @@ def build() -> str:
         f'<rect width="{width}" height="{height}" fill="{BG}"/>\n'
         f'<rect width="{width}" height="{height}" fill="url(#grid)" opacity="0.5"/>\n'
         f'<rect width="{width}" height="{height}" fill="url(#scan)"/>\n'
-        f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" fill="none" '
-        f'stroke="{LINE}"/>\n'
         # portrait panel
         f'<rect x="{PAD}" y="{top}" width="{art_panel_w}" height="{body_h}" fill="#000" '
         f'fill-opacity="0.35" stroke="{LINE}"/>\n'
