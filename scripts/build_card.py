@@ -22,10 +22,10 @@ OUTPUT_PATH = "assets/profile.svg"
 # (key, value) rows shown under the name. Age and GitHub rows are added
 # automatically after these.
 INFO = [
-    ("OS", "Omarchy (Arch Linux), Hyprland"),
-    ("University", "PES University, B.Tech CSE (sophomore)"),
+    ("OS", "Omarchy, Android, Windows"),
+    ("University", "PES University, B.Tech CSE"),
     ("Interests", "Hardware and software"),
-    ("Languages", "TypeScript, Rust, Python"),
+    ("Languages", "Python, Javascript, C"),
     ("Frameworks", "React, Next.js, Fastify, Express, Socket.IO"),
     ("Tools", "Docker, Prisma, Vite, Tailwind CSS"),
 ]
