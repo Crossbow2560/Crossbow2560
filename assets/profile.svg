@@ -59,10 +59,10 @@
 <text x="0" y="14" class="name">Nishit DB</text>
 <text x="0" y="27.2" class="d">----------------------------------</text>
 <text x="0" y="49.2"><tspan class="k">Age</tspan><tspan class="d">: </tspan><tspan class="v">20 years, 3 months, 0 days</tspan></text>
-<text x="0" y="71.2"><tspan class="k">OS</tspan><tspan class="d">: </tspan><tspan class="v">Omarchy (Arch Linux), Hyprland</tspan></text>
-<text x="0" y="93.2"><tspan class="k">University</tspan><tspan class="d">: </tspan><tspan class="v">PES University, B.Tech CSE (sophomore)</tspan></text>
+<text x="0" y="71.2"><tspan class="k">OS</tspan><tspan class="d">: </tspan><tspan class="v">Omarchy, Android, Windows</tspan></text>
+<text x="0" y="93.2"><tspan class="k">University</tspan><tspan class="d">: </tspan><tspan class="v">PES University, B.Tech CSE</tspan></text>
 <text x="0" y="115.2"><tspan class="k">Interests</tspan><tspan class="d">: </tspan><tspan class="v">Hardware and software</tspan></text>
-<text x="0" y="137.2"><tspan class="k">Languages</tspan><tspan class="d">: </tspan><tspan class="v">TypeScript, Rust, Python</tspan></text>
+<text x="0" y="137.2"><tspan class="k">Languages</tspan><tspan class="d">: </tspan><tspan class="v">Python, Javascript, C</tspan></text>
 <text x="0" y="159.2"><tspan class="k">Frameworks</tspan><tspan class="d">: </tspan><tspan class="v">React, Next.js, Fastify, Express, Socket.IO</tspan></text>
 <text x="0" y="181.2"><tspan class="k">Tools</tspan><tspan class="d">: </tspan><tspan class="v">Docker, Prisma, Vite, Tailwind CSS</tspan></text>
 <text x="0" y="216.4" class="h">Projects</text>
