@@ -1,0 +1,40 @@
+name: ASCII Portrait
+
+on:
+  push:
+    paths:
+      - assets/portrait.jpg
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ascii:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: pip install pillow
+
+      - name: Generate ASCII portrait
+        run: python scripts/ascii_portrait.py
+
+      - name: Commit and push if README changed
+        run: |
+          if git diff --quiet README.md; then
+            echo "README.md unchanged, nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update ASCII portrait"
+          git push
