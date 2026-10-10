@@ -60,7 +60,7 @@
 <g transform="translate(426 46)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
 <text x="0" y="24" fill="#e8f1ef" font-size="24" font-weight="800" letter-spacing="2">NISHIT DB<tspan fill="#5b9dff" class="cursor">_</tspan></text>
 <text x="0" y="53.4" fill="#5d6b82" letter-spacing="1.5">[ SYSTEM ]</text><rect x="0" y="61.4" width="500" height="1" fill="#1c2433"/><rect x="0" y="61.4" width="28" height="1" fill="#5b9dff"/>
-<text x="0" y="78.6" fill="#5b9dff" font-weight="700">AGE</text><text x="112" y="78.6" fill="#5b9dff">20 years, 3 months, 1 day</text>
+<text x="0" y="78.6" fill="#5b9dff" font-weight="700">AGE</text><text x="112" y="78.6" fill="#5b9dff">20 years, 3 months, 2 days</text>
 <text x="0" y="99.6" fill="#5b9dff" font-weight="700">OS</text><text x="112" y="99.6" fill="#d3dbe8">Omarchy (Arch Linux), Hyprland</text>
 <text x="0" y="120.6" fill="#5b9dff" font-weight="700">UNIVERSITY</text><text x="112" y="120.6" fill="#d3dbe8">PES University, B.Tech CSE (sophomore)</text>
 <text x="0" y="141.6" fill="#5b9dff" font-weight="700">INTERESTS</text><text x="112" y="141.6" fill="#d3dbe8">Hardware and software</text>
@@ -74,6 +74,6 @@
 <text x="0" y="343.2" fill="#5b9dff" font-weight="700">NEXT</text><text x="112" y="343.2" fill="#5d6b82">coming soon</text>
 <text x="0" y="376.8" fill="#5d6b82" letter-spacing="1.5">[ GITHUB ]</text><rect x="0" y="384.8" width="500" height="1" fill="#1c2433"/><rect x="0" y="384.8" width="28" height="1" fill="#5b9dff"/>
 <text x="0" y="402" fill="#5b9dff" font-weight="700">STATS</text><text x="112" y="402" fill="#d3dbe8">REPOS 30  |  FOLLOWERS 12  |  STARS 1</text>
-<text x="0" y="423" fill="#5b9dff" font-weight="700">SYNC</text><text x="112" y="423" fill="#5d6b82">2026-10-09 UTC</text>
+<text x="0" y="423" fill="#5b9dff" font-weight="700">SYNC</text><text x="112" y="423" fill="#5d6b82">2026-10-10 UTC</text>
 </g>
 </svg>
