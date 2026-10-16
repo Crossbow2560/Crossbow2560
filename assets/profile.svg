@@ -65,7 +65,7 @@
 <text x="0" y="120.6" fill="#5b9dff" font-weight="700">UNIVERSITY</text><text x="112" y="120.6" fill="#d3dbe8">PES University, B.Tech CSE (sophomore)</text>
 <text x="0" y="141.6" fill="#5b9dff" font-weight="700">INTERESTS</text><text x="112" y="141.6" fill="#d3dbe8">Hardware and software</text>
 <text x="0" y="175.2" fill="#5d6b82" letter-spacing="1.5">[ STACK ]</text><rect x="0" y="183.2" width="500" height="1" fill="#1c2433"/><rect x="0" y="183.2" width="28" height="1" fill="#5b9dff"/>
-<text x="0" y="200.4" fill="#5b9dff" font-weight="700">LANGUAGES</text><text x="112" y="200.4" fill="#d3dbe8">TypeScript, Rust, Python</text>
+<text x="0" y="200.4" fill="#5b9dff" font-weight="700">LANGUAGES</text><text x="112" y="200.4" fill="#d3dbe8">TypeScript, C, Python</text>
 <text x="0" y="221.4" fill="#5b9dff" font-weight="700">FRAMEWORKS</text><text x="112" y="221.4" fill="#d3dbe8">React, Next.js, Fastify, Express, Socket.IO</text>
 <text x="0" y="242.4" fill="#5b9dff" font-weight="700">TOOLS</text><text x="112" y="242.4" fill="#d3dbe8">Docker, Prisma, Vite, Tailwind CSS</text>
 <text x="0" y="276" fill="#5d6b82" letter-spacing="1.5">[ PROJECTS ]</text><rect x="0" y="284" width="500" height="1" fill="#1c2433"/><rect x="0" y="284" width="28" height="1" fill="#5b9dff"/>
@@ -73,7 +73,7 @@
 <text x="0" y="322.2" fill="#5b9dff" font-weight="700">CABO</text><text x="112" y="322.2" fill="#d3dbe8">cabo.nishit-db.com</text>
 <text x="0" y="343.2" fill="#5b9dff" font-weight="700">NEXT</text><text x="112" y="343.2" fill="#5d6b82">coming soon</text>
 <text x="0" y="376.8" fill="#5d6b82" letter-spacing="1.5">[ GITHUB ]</text><rect x="0" y="384.8" width="500" height="1" fill="#1c2433"/><rect x="0" y="384.8" width="28" height="1" fill="#5b9dff"/>
-<text x="0" y="402" fill="#5b9dff" font-weight="700">STATS</text><text x="112" y="402" fill="#d3dbe8">REPOS 31  |  FOLLOWERS 12  |  STARS 1</text>
+<text x="0" y="402" fill="#5b9dff" font-weight="700">STATS</text><text x="112" y="402" fill="#d3dbe8">REPOS 32  |  FOLLOWERS 12  |  STARS 1</text>
 <text x="0" y="423" fill="#5b9dff" font-weight="700">SYNC</text><text x="112" y="423" fill="#5d6b82">2026-10-16 UTC</text>
 </g>
 </svg>
