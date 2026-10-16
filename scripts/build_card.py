@@ -27,7 +27,7 @@ SYSTEM = [
     ("INTERESTS", "Hardware and software"),
 ]
 STACK = [
-    ("LANGUAGES", "TypeScript, Rust, Python"),
+    ("LANGUAGES", "TypeScript, C, Python"),
     ("FRAMEWORKS", "React, Next.js, Fastify, Express, Socket.IO"),
     ("TOOLS", "Docker, Prisma, Vite, Tailwind CSS"),
 ]
